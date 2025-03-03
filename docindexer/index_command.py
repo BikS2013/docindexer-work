@@ -30,33 +30,7 @@ def execute_index_command(config_manager, args: Dict[str, Any], validate_and_app
         # Validate and apply configuration
         effective_config = validate_and_apply_config('index', args)
         
-        # Handle configuration creation if requested
-        config_created = False
-        
-        if args.get('create_local_config', False):
-            config_manager.create_local_config()
-            config_created = True
-            console.print("[bold green]✓[/] Created local configuration file")
-            
-        if args.get('create_global_config', False):
-            config_manager.create_global_config()
-            config_created = True
-            console.print("[bold green]✓[/] Created global configuration file")
-            
-        # Show configuration if requested
-        if args.get('show_config', False):
-            table = Table(title="Effective Configuration")
-            table.add_column("Option", style="cyan")
-            table.add_column("Value", style="green")
-            
-            for k, v in sorted(effective_config.items()):
-                if v is not None:
-                    table.add_row(k, str(v))
-                    
-            console.print(table)
-            
-            if not args.get('run_after_config_create', True) or not config_created:
-                return 0
+        # No configuration-related functionality here anymore
         
         # If this is just a dry run or config operation, we're done
         if args.get('dry_run', False) and not args.get('debug', False):
@@ -147,14 +121,6 @@ def setup_index_command(main_group, validate_and_apply_config, config_manager):
     # Other options specific to index or shared
     @click.option('--recursive', '-R', is_flag=True, help='Index documents recursively.')
     @click.option('--output', '-o', type=click.Path(), help='Output file path.')
-    @click.option('--create-local-config', is_flag=True, 
-                help='Create a local config.json file with current settings')
-    @click.option('--create-global-config', is_flag=True, 
-                help='Create a global config.json file with current settings')
-    @click.option('--run-after-config-create/--no-run-after-config-create', is_flag=True, default=True,
-                help='Run the command after creating config file(s)')
-    @click.option('--show-config', is_flag=True,
-                help='Show effective configuration and exit')
     @click.option('--limit', '-l', type=int, help='Limit the number of files to be processed')
     @click.option('--random', is_flag=True, help='Process files in random order')
     @click.option('--debug', is_flag=True, help='Enable debug mode with additional logging')
@@ -162,8 +128,7 @@ def setup_index_command(main_group, validate_and_apply_config, config_manager):
     @click.option('--include-hidden', is_flag=True, help='Include hidden files and directories (starting with .)')
     @click.pass_context
     def index(ctx, path, pattern, regex, sort_by, desc, max_depth, recursive, output,
-              create_local_config, create_global_config, run_after_config_create,
-              show_config, limit, random, debug, dry_run, include_hidden):
+              limit, random, debug, dry_run, include_hidden):
         """Index documents in the specified path."""
         # Convert click context to dictionary
         args = {
@@ -178,10 +143,6 @@ def setup_index_command(main_group, validate_and_apply_config, config_manager):
             'output': output,
             'limit': limit,
             'random': random,
-            'create_local_config': create_local_config,
-            'create_global_config': create_global_config,
-            'run_after_config_create': run_after_config_create,
-            'show_config': show_config,
             'debug': debug,
             'dry_run': dry_run,
             'include_hidden': include_hidden

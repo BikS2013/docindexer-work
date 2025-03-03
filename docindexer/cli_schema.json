@@ -125,35 +125,6 @@
       "default-value": "./output"
     },
     {
-      "name": "create_local_config",
-      "description": "Create a local config.json file with current settings",
-      "type": "boolean",
-      "flag": "--create-local-config",
-      "required": false
-    },
-    {
-      "name": "create_global_config",
-      "description": "Create a global config.json file with current settings",
-      "type": "boolean",
-      "flag": "--create-global-config",
-      "required": false
-    },
-    {
-      "name": "run_after_config_create",
-      "description": "Run the command after creating config file(s)",
-      "type": "boolean",
-      "flag": "--run-after-config-create",
-      "required": false,
-      "default-value": true
-    },
-    {
-      "name": "show_config",
-      "description": "Show effective configuration and exit",
-      "type": "boolean",
-      "flag": "--show-config",
-      "required": false
-    },
-    {
       "name": "debug",
       "description": "Enable debug mode with additional logging",
       "type": "boolean",
@@ -240,6 +211,27 @@
           "flag": "--source",
           "required": false,
           "default-value": "effective"
+        },
+        {
+          "name": "create_local",
+          "description": "Create a local config.json file with current settings",
+          "type": "boolean",
+          "flag": "--create-local",
+          "required": false
+        },
+        {
+          "name": "create_global",
+          "description": "Create a global config.json file with current settings",
+          "type": "boolean",
+          "flag": "--create-global",
+          "required": false
+        },
+        {
+          "name": "show",
+          "description": "Show effective configuration and exit",
+          "type": "boolean",
+          "flag": "--show",
+          "required": false
         }
       ],
       "inheritsCommonOptions": false,

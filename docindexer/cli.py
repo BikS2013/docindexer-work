@@ -21,6 +21,7 @@ from .file_iterator import FileIterator, FileInfo
 from .list_command import setup_list_command
 from .index_command import setup_index_command
 from .schema_command import setup_schema_command
+from .config_command import setup_config_command
 
 # Initialize console for rich output
 console = Console()
@@ -79,48 +80,7 @@ def main(readme):
 
 # Command will be set up after main group is defined
 
-@main.command()
-@click.option('--source', type=click.Choice(['all', 'global', 'local', 'effective']), 
-              default='effective', help='Which configuration source to display')
-def config(source):
-    """Display current configuration settings."""
-    # Load configuration
-    config_manager.load_config()
-    
-    if source in ['all', 'global']:
-        config_manager.load_global_config()
-        if config_manager._global_config:
-            console.print(Panel(
-                json.dumps(config_manager._global_config, indent=2),
-                title="Global Configuration (~/.docindexer/config.json)",
-                border_style="blue"
-            ))
-        else:
-            console.print("[yellow]No global configuration found[/]")
-    
-    if source in ['all', 'local']:
-        config_manager.load_local_config()
-        if config_manager._local_config:
-            console.print(Panel(
-                json.dumps(config_manager._local_config, indent=2),
-                title="Local Configuration (./config.json)",
-                border_style="green"
-            ))
-        else:
-            console.print("[yellow]No local configuration found[/]")
-    
-    if source in ['all', 'effective']:
-        effective_config = config_manager.as_dict()
-        if effective_config:
-            console.print(Panel(
-                json.dumps(effective_config, indent=2),
-                title="Effective Configuration",
-                border_style="yellow"
-            ))
-        else:
-            console.print("[yellow]No configuration found[/]")
-    
-    return 0
+# Command will be set up after main group is defined
 
 # Command will be set up after main group is defined
 
@@ -140,6 +100,7 @@ def structure(command, args):
 setup_index_command(main, validate_and_apply_config, config_manager)
 setup_list_command(main, validate_and_apply_config, config_manager)
 setup_schema_command(main, validator)
+setup_config_command(main, config_manager)
 
 if __name__ == '__main__':
     main()
