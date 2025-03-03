@@ -114,15 +114,20 @@ def setup_list_command(main_group, validate_and_apply_config, config_manager):
         config_manager: Configuration manager instance
     """
     @main_group.command()
+    # Common options for file discovery
+    @click.option('--source-folder', '-s', help='Path to the folder containing files to be processed')
+    @click.option('--catalogue', '-c', help='Path to a catalogue JSON file')
+    @click.option('--file-name', '-n', help='the name of the file to be processed')
+    
+    # Common file filtering options (moved from command-specific to common)
     @click.option('--pattern', '-p', help='Pattern to match file names (glob pattern by default). Patterns must be included in quotes')
     @click.option('--regex', is_flag=True, help='Use regular expressions instead of glob patterns. Regular expressions must be included in quotes')
     @click.option('--sort-by', type=click.Choice(['name', 'date', 'size']), default='name',
                 help='Sort files by: name, date, or size')
     @click.option('--desc', is_flag=True, help='Sort in descending order')
     @click.option('--max-depth', type=int, help='Maximum directory depth for recursive search')
-    @click.option('--source-folder', '-s', help='Path to the folder containing files to be processed')
-    @click.option('--catalogue', '-c', help='Path to a catalogue JSON file')
-    @click.option('--file-name', '-n', help='the name of the file to be processed')
+    
+    # Other common options
     @click.option('--recursive/--no-recursive', '-R', default=True, help='Process files in subfolders recursively')
     @click.option('--limit', '-l', type=int, help='Limit the number of files to be processed')
     @click.option('--random', '-r', is_flag=True, help='Process files in random order')

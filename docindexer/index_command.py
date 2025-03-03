@@ -76,10 +76,22 @@ def execute_index_command(config_manager, args: Dict[str, Any], validate_and_app
             console.print(f"Output will be saved to: [bold yellow]{output}[/]")
         
         # Create and run the indexer (skipping actual operations in dry-run mode)
-        indexer = DocIndexer(output_path=output)
+        indexer = DocIndexer(output_path=output, config=config_manager)
         
         if not args.get('dry_run', False):
-            results = indexer.index_directory(path, recursive=recursive)
+            # Pass all the filter options to the indexer, it will handle them through the FileIterator
+            results = indexer.index_directory(
+                path, 
+                recursive=recursive,
+                pattern=args.get('pattern'),
+                use_regex=args.get('use_regex', False),
+                sort_by=args.get('sort_by', 'name'),
+                sort_desc=args.get('sort_desc', False),
+                max_depth=args.get('max_depth'),
+                limit=args.get('limit'),
+                random=args.get('random', False),
+                include_hidden=args.get('include_hidden', False)
+            )
             
             # Display results
             if results:
@@ -123,7 +135,17 @@ def setup_index_command(main_group, validate_and_apply_config, config_manager):
     """
     @main_group.command()
     @click.argument('path', type=click.Path(exists=True))
-    @click.option('--recursive', '-r', '-R', is_flag=True, help='Index documents recursively.')
+    
+    # Common file filtering options (moved from list command to common)
+    @click.option('--pattern', '-p', help='Pattern to match file names (glob pattern by default). Patterns must be included in quotes')
+    @click.option('--regex', is_flag=True, help='Use regular expressions instead of glob patterns. Regular expressions must be included in quotes')
+    @click.option('--sort-by', type=click.Choice(['name', 'date', 'size']), default='name',
+                help='Sort files by: name, date, or size')
+    @click.option('--desc', is_flag=True, help='Sort in descending order')
+    @click.option('--max-depth', type=int, help='Maximum directory depth for recursive search')
+    
+    # Other options specific to index or shared
+    @click.option('--recursive', '-R', is_flag=True, help='Index documents recursively.')
     @click.option('--output', '-o', type=click.Path(), help='Output file path.')
     @click.option('--create-local-config', is_flag=True, 
                 help='Create a local config.json file with current settings')
@@ -133,24 +155,36 @@ def setup_index_command(main_group, validate_and_apply_config, config_manager):
                 help='Run the command after creating config file(s)')
     @click.option('--show-config', is_flag=True,
                 help='Show effective configuration and exit')
+    @click.option('--limit', '-l', type=int, help='Limit the number of files to be processed')
+    @click.option('--random', is_flag=True, help='Process files in random order')
     @click.option('--debug', is_flag=True, help='Enable debug mode with additional logging')
     @click.option('--dry-run', is_flag=True, help='Perform a dry run without saving any files')
+    @click.option('--include-hidden', is_flag=True, help='Include hidden files and directories (starting with .)')
     @click.pass_context
-    def index(ctx, path, recursive, output, create_local_config, create_global_config,
-              run_after_config_create, show_config, debug, dry_run):
+    def index(ctx, path, pattern, regex, sort_by, desc, max_depth, recursive, output,
+              create_local_config, create_global_config, run_after_config_create,
+              show_config, limit, random, debug, dry_run, include_hidden):
         """Index documents in the specified path."""
         # Convert click context to dictionary
         args = {
             'command': 'index',
             'path': path,
+            'pattern': pattern,
+            'use_regex': regex,
+            'sort_by': sort_by,
+            'sort_desc': desc, 
+            'max_depth': max_depth,
             'recursive': recursive,
             'output': output,
+            'limit': limit,
+            'random': random,
             'create_local_config': create_local_config,
             'create_global_config': create_global_config,
             'run_after_config_create': run_after_config_create,
             'show_config': show_config,
             'debug': debug,
-            'dry_run': dry_run
+            'dry_run': dry_run,
+            'include_hidden': include_hidden
         }
         
         return execute_index_command(config_manager, args, validate_and_apply_config)

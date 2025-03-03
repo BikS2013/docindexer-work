@@ -50,6 +50,45 @@
       ]
     },
     {
+      "name": "pattern",
+      "description": "Pattern to match file names (glob pattern by default)",
+      "type": "string",
+      "flag": "--pattern",
+      "alternative-flag": "-p",
+      "required": false
+    },
+    {
+      "name": "use_regex",
+      "description": "Use regular expressions instead of glob patterns",
+      "type": "boolean",
+      "flag": "--regex",
+      "required": false,
+      "default-value": false
+    },
+    {
+      "name": "sort_by",
+      "description": "Sort files by: name, date, or size",
+      "type": "string",
+      "flag": "--sort-by",
+      "required": false,
+      "default-value": "name"
+    },
+    {
+      "name": "sort_desc",
+      "description": "Sort in descending order",
+      "type": "boolean",
+      "flag": "--desc",
+      "required": false,
+      "default-value": false
+    },
+    {
+      "name": "max_depth",
+      "description": "Maximum directory depth for recursive search",
+      "type": "integer",
+      "flag": "--max-depth",
+      "required": false
+    },
+    {
       "name": "recursive",
       "description": "Process files in subfolders recursively",
       "type": "boolean",
@@ -142,47 +181,7 @@
     {
       "name": "list",
       "description": "List files that would be processed based on configuration",
-      "options": [
-        {
-          "name": "pattern",
-          "description": "Pattern to match file names (glob pattern by default)",
-          "type": "string",
-          "flag": "--pattern",
-          "alternative-flag": "-p",
-          "required": false
-        },
-        {
-          "name": "use_regex",
-          "description": "Use regular expressions instead of glob patterns",
-          "type": "boolean",
-          "flag": "--regex",
-          "required": false,
-          "default-value": false
-        },
-        {
-          "name": "sort_by",
-          "description": "Sort files by: name, date, or size",
-          "type": "string",
-          "flag": "--sort-by",
-          "required": false,
-          "default-value": "name"
-        },
-        {
-          "name": "sort_desc",
-          "description": "Sort in descending order",
-          "type": "boolean",
-          "flag": "--desc",
-          "required": false,
-          "default-value": false
-        },
-        {
-          "name": "max_depth",
-          "description": "Maximum directory depth for recursive search",
-          "type": "integer",
-          "flag": "--max-depth",
-          "required": false
-        }
-      ],
+      "options": [],
       "inheritsCommonOptions": true,
       "requiredOptions": [
         [
