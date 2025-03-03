@@ -75,6 +75,18 @@ I want you to create a markdown file to explain in detail the structure, the cap
 Can you add some diagrams (mermaid format) to visualize the content and make your explanation easily understandable?
 ----------------------------------------------------------------------
 I want you to put the list command in a dedicated code file.
+I want you to put the index command in a dedicated code file.
+
+
+I want you to convert all the list options (see below):
+list: List files that would be processed based on configuration
+├── --pattern: Pattern to match file names (glob pattern by default)
+├── --regex: Use regular expressions instead of glob patterns
+├── --sort-by: Sort files by: name, date, or size
+├── --desc: Sort in descending order
+└── --max-depth: Maximum directory depth for recursive search
+to common options 
+
 
 ----------------------------------------------------------------------
 
