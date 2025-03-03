@@ -363,10 +363,13 @@ class TestConfiguration(unittest.TestCase):
     
     def tearDown(self):
         """Tear down test fixtures."""
-        # Remove test files
-        os.unlink(self.local_config_path)
-        os.unlink(self.global_config_path)
-        os.rmdir(self.global_config_dir)
+        # Remove test files if they exist
+        if self.local_config_path.exists():
+            os.unlink(self.local_config_path)
+        if self.global_config_path.exists():
+            os.unlink(self.global_config_path)
+        if self.global_config_dir.exists():
+            os.rmdir(self.global_config_dir)
         os.rmdir(self.temp_dir)
     
     def test_load_config(self):
@@ -401,11 +404,15 @@ class TestConfiguration(unittest.TestCase):
         # First load existing configs
         self.config.load_config()
         
-        # Add a CLI option
-        self.config.set_cli_args({"cli_option": "cli_value"})
+        # Add a CLI option that overrides shared_option
+        self.config.set_cli_args({
+            "cli_option": "cli_value", 
+            "shared_option": "cli_value"
+        })
         
         # Create a new local config file
-        os.unlink(self.local_config_path)
+        if self.local_config_path.exists():
+            os.unlink(self.local_config_path)
         self.config.create_local_config()
         
         # Check that the file was created with the merged config
@@ -419,9 +426,11 @@ class TestConfiguration(unittest.TestCase):
     
     def test_missing_config_file(self):
         """Test behavior with missing config files."""
-        # Remove the files
-        os.unlink(self.local_config_path)
-        os.unlink(self.global_config_path)
+        # Make sure the files don't exist for this test
+        if self.local_config_path.exists():
+            os.unlink(self.local_config_path)
+        if self.global_config_path.exists():
+            os.unlink(self.global_config_path)
         
         # This should not raise an exception
         self.config.load_config()

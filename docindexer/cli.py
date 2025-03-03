@@ -9,6 +9,7 @@ from rich.table import Table
 from rich.panel import Panel
 from rich.markdown import Markdown
 from rich.tree import Tree
+from rich.progress import Progress
 from pathlib import Path
 import os
 from typing import Any, Dict, List, Optional
@@ -16,6 +17,7 @@ from typing import Any, Dict, List, Optional
 from .indexer import DocIndexer
 from .validator import SchemaValidator, ValidationError
 from .config import Configuration
+from .file_iterator import FileIterator, FileInfo
 
 # Initialize console for rich output
 console = Console()
@@ -271,6 +273,111 @@ def schema():
     
     console.print(tree)
     return 0
+
+@main.command()
+@click.option('--pattern', '-p', help='Pattern to match file names (glob pattern by default)')
+@click.option('--regex', is_flag=True, help='Use regular expressions instead of glob patterns')
+@click.option('--sort-by', type=click.Choice(['name', 'date', 'size']), default='name',
+              help='Sort files by: name, date, or size')
+@click.option('--desc', is_flag=True, help='Sort in descending order')
+@click.option('--max-depth', type=int, help='Maximum directory depth for recursive search')
+@click.option('--source-folder', '-s', help='Path to the folder containing files to be processed')
+@click.option('--catalogue', '-c', help='Path to a catalogue JSON file')
+@click.option('--file-name', '-n', help='the name of the file to be processed')
+@click.option('--recursive/--no-recursive', '-R', default=True, help='Process files in subfolders recursively')
+@click.option('--limit', '-l', type=int, help='Limit the number of files to be processed')
+@click.option('--random', '-r', is_flag=True, help='Process files in random order')
+@click.option('--debug', is_flag=True, help='Enable debug mode with additional logging')
+@click.option('--include-hidden', is_flag=True, help='Include hidden files and directories (starting with .)')
+@click.pass_context
+def list(ctx, pattern, regex, sort_by, desc, max_depth, source_folder, catalogue,
+         file_name, recursive, limit, random, debug, include_hidden):
+    """List files that would be processed based on configuration."""
+    args = {
+        'command': 'list',
+        'pattern': pattern,
+        'use_regex': regex,
+        'sort_by': sort_by,
+        'sort_desc': desc,
+        'max_depth': max_depth,
+        'source_folder': source_folder,
+        'catalogue': catalogue,
+        'file_name': file_name,
+        'recursive': recursive,
+        'limit': limit,
+        'random': random,
+        'debug': debug,
+        'include_hidden': include_hidden
+    }
+    
+    try:
+        # Validate and apply configuration
+        effective_config = validate_and_apply_config('list', args)
+        
+        # Show debug information if requested
+        if debug:
+            console.print("\n[bold blue]Configuration:[/]")
+            console.print(Panel(json.dumps(effective_config, indent=2), title="Effective Configuration"))
+        
+        # Create file iterator
+        file_iterator = FileIterator(config_manager)
+        
+        # Display file count and processing message
+        console.print(f"\n[bold]Finding files based on configuration...[/]")
+        
+        # Load files with progress indicator
+        with Progress() as progress:
+            task = progress.add_task("[cyan]Scanning directories...", total=None)
+            file_iterator.load()
+            progress.update(task, completed=100)
+        
+        file_count = file_iterator.count()
+        
+        if file_count == 0:
+            console.print("[yellow]No files found matching the criteria.[/]")
+            return 0
+        
+        # Create a table to display files
+        table = Table(title=f"Found {file_count} files")
+        table.add_column("File Name", style="cyan")
+        table.add_column("Path", style="green")
+        table.add_column("Size", style="yellow", justify="right")
+        table.add_column("Modified", style="magenta")
+        
+        # Add files to the table
+        for file_info in file_iterator:
+            from datetime import datetime
+            # Format the modified time
+            modified_time = datetime.fromtimestamp(file_info.modified).strftime('%Y-%m-%d %H:%M:%S')
+            
+            # Format the size
+            if file_info.size < 1024:
+                size_str = f"{file_info.size} B"
+            elif file_info.size < 1024 * 1024:
+                size_str = f"{file_info.size / 1024:.2f} KB"
+            else:
+                size_str = f"{file_info.size / (1024 * 1024):.2f} MB"
+                
+            table.add_row(
+                file_info.name,
+                str(file_info.path.parent),
+                size_str,
+                modified_time
+            )
+        
+        console.print(table)
+        
+        return 0
+    
+    except ValidationError as e:
+        console.print(f"[bold red]Validation Error:[/] {str(e)}")
+        return 1
+    except Exception as e:
+        console.print(f"[bold red]Error:[/] {str(e)}")
+        if debug:
+            console.print_exception()
+        return 1
+
 
 @main.command()
 @click.argument('command', required=True)

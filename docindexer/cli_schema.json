@@ -57,9 +57,7 @@
       "alternative-flag": "-R",
       "required": false,
       "default-value": true,
-      "requires": [
-        "source_folder"
-      ]
+      "requires": []
     },
     {
       "name": "limit",
@@ -130,9 +128,86 @@
       "flag": "--dry-run",
       "required": false,
       "default-value": false
+    },
+    {
+      "name": "include_hidden",
+      "description": "Include hidden files and directories (starting with .)",
+      "type": "boolean",
+      "flag": "--include-hidden",
+      "required": false,
+      "default-value": false
     }
   ],
   "commands": [
+    {
+      "name": "list",
+      "description": "List files that would be processed based on configuration",
+      "options": [
+        {
+          "name": "pattern",
+          "description": "Pattern to match file names (glob pattern by default)",
+          "type": "string",
+          "flag": "--pattern",
+          "alternative-flag": "-p",
+          "required": false
+        },
+        {
+          "name": "use_regex",
+          "description": "Use regular expressions instead of glob patterns",
+          "type": "boolean",
+          "flag": "--regex",
+          "required": false,
+          "default-value": false
+        },
+        {
+          "name": "sort_by",
+          "description": "Sort files by: name, date, or size",
+          "type": "string",
+          "flag": "--sort-by",
+          "required": false,
+          "default-value": "name"
+        },
+        {
+          "name": "sort_desc",
+          "description": "Sort in descending order",
+          "type": "boolean",
+          "flag": "--desc",
+          "required": false,
+          "default-value": false
+        },
+        {
+          "name": "max_depth",
+          "description": "Maximum directory depth for recursive search",
+          "type": "integer",
+          "flag": "--max-depth",
+          "required": false
+        }
+      ],
+      "inheritsCommonOptions": true,
+      "requiredOptions": [
+        [
+          "catalogue",
+          "source_folder",
+          "file_name"
+        ]
+      ]
+    },
+    {
+      "name": "index",
+      "description": "Index documents in the specified path",
+      "options": [
+        {
+          "name": "output",
+          "description": "Output file path for the index",
+          "type": "string",
+          "flag": "--output",
+          "alternative-flag": "-o",
+          "required": false
+        }
+      ],
+      "inheritsCommonOptions": true,
+      "requiredOptions": []
+    },
     {
       "name": "structure",
       "description": "Create a hierarchical JSON representation of markdown structure",
