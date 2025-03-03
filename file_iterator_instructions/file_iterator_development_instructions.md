@@ -88,6 +88,8 @@ list: List files that would be processed based on configuration
 to common options 
 
 
+I want you to put the schema command in a dedicated code file.
+
 ----------------------------------------------------------------------
 
 I want you to create a file iterator class 
