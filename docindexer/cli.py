@@ -275,8 +275,8 @@ def schema():
     return 0
 
 @main.command()
-@click.option('--pattern', '-p', help='Pattern to match file names (glob pattern by default)')
-@click.option('--regex', is_flag=True, help='Use regular expressions instead of glob patterns')
+@click.option('--pattern', '-p', help='Pattern to match file names (glob pattern by default). Patterns must be included in quotes')
+@click.option('--regex', is_flag=True, help='Use regular expressions instead of glob patterns. Regular expressions must be included in quotes')
 @click.option('--sort-by', type=click.Choice(['name', 'date', 'size']), default='name',
               help='Sort files by: name, date, or size')
 @click.option('--desc', is_flag=True, help='Sort in descending order')

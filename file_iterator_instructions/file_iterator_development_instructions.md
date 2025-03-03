@@ -71,7 +71,10 @@ Create a FileIterator class that generates a list of files to be processed based
 
 ----------------------------------------------------------------------
 I want you to create a markdown file to explain in detail the structure, the capabilities and use cases of the FileIterator class and its supporting classes and code. 
-
+----------------------------------------------------------------------
+Can you add some diagrams (mermaid format) to visualize the content and make your explanation easily understandable?
+----------------------------------------------------------------------
+I want you to put the list command in a dedicated code file.
 
 ----------------------------------------------------------------------
 
