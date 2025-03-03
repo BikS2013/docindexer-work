@@ -8,3 +8,6 @@ The test scenarios must be placed in a json file together with their expected re
 
 I don't want you to implement any other functionality yet apart of collecting the command line arguments, validating them against the schema definition, populating the configuration class, creating and/or reading the configuration files, and displaying the appropriate help.
 
+You must take into account that cli_interface_instructions.md is outdated, so you must fix it according to the new cli_schema.json file. 
+
+The code you will write must be structured, follow the SOLID principles and be according the known coding best practices. 
