@@ -70,6 +70,10 @@ Create a FileIterator class that generates a list of files to be processed based
 - Must maintain compatibility with the existing Configuration class
 
 ----------------------------------------------------------------------
+I want you to create a markdown file to explain in detail the structure, the capabilities and use cases of the FileIterator class and its supporting classes and code. 
+
+
+----------------------------------------------------------------------
 
 I want you to create a file iterator class 
 to get the cli configuration class (as populated by the cli interface) as input, 
