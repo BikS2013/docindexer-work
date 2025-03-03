@@ -63,20 +63,31 @@ def validate_and_apply_config(command: str, args: Dict[str, Any]) -> Dict[str, A
     
     return config_manager.as_dict()
 
-@click.group()
+def display_readme():
+    """Display the README file and exit."""
+    try:
+        readme_path = Path.cwd() / "README.md"
+        with open(readme_path, 'r') as f:
+            console.print(Panel(Markdown(f.read()), title="README", border_style="blue"))
+        sys.exit(0)
+    except FileNotFoundError:
+        console.print("[bold red]README.md not found![/]")
+        sys.exit(1)
+
+@click.group(invoke_without_command=True)
 @click.version_option()
 @click.option('--readme', is_flag=True, help='Display README and exit')
-def main(readme):
+@click.pass_context
+def main(ctx, readme):
     """DocIndexer - A command line tool for indexing documents."""
+    # If --readme is specified, display README and exit
     if readme:
-        try:
-            readme_path = Path.cwd() / "README.md"
-            with open(readme_path, 'r') as f:
-                console.print(Panel(Markdown(f.read()), title="README", border_style="blue"))
-            sys.exit(0)
-        except FileNotFoundError:
-            console.print("[bold red]README.md not found![/]")
-            sys.exit(1)
+        display_readme()
+        
+    # If no command is specified, show help
+    if ctx.invoked_subcommand is None and not readme:
+        click.echo(ctx.get_help())
+        ctx.exit(0)
 
 # Command will be set up after main group is defined
 
