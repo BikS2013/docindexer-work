@@ -1,0 +1,319 @@
+{
+  "test_scenarios": [
+    {
+      "id": 1,
+      "description": "Basic index command with valid path",
+      "command": "index",
+      "args": {
+        "path": "/tmp",
+        "recursive": false
+      },
+      "expected": {
+        "success": true
+      },
+      "test_category": "Valid arguments"
+    },
+    {
+      "id": 2,
+      "description": "Index command with recursive flag",
+      "command": "index",
+      "args": {
+        "path": "/tmp",
+        "recursive": true
+      },
+      "expected": {
+        "success": true
+      },
+      "test_category": "Valid arguments"
+    },
+    {
+      "id": 3,
+      "description": "Index command with output file",
+      "command": "index",
+      "args": {
+        "path": "/tmp",
+        "output": "/tmp/index.json"
+      },
+      "expected": {
+        "success": true
+      },
+      "test_category": "Valid arguments"
+    },
+    {
+      "id": 4,
+      "description": "Index command with all options",
+      "command": "index",
+      "args": {
+        "path": "/tmp",
+        "recursive": true,
+        "output": "/tmp/index.json",
+        "debug": true
+      },
+      "expected": {
+        "success": true
+      },
+      "test_category": "Valid arguments"
+    },
+    {
+      "id": 5,
+      "description": "Index command with non-existent path",
+      "command": "index",
+      "args": {
+        "path": "/non-existent-path"
+      },
+      "expected": {
+        "success": false,
+        "error": "File or directory not found"
+      },
+      "test_category": "Invalid arguments"
+    },
+    {
+      "id": 6,
+      "description": "Show configuration with all sources",
+      "command": "config",
+      "args": {
+        "source": "all"
+      },
+      "expected": {
+        "success": true
+      },
+      "test_category": "Valid arguments"
+    },
+    {
+      "id": 7,
+      "description": "Show global configuration",
+      "command": "config",
+      "args": {
+        "source": "global"
+      },
+      "expected": {
+        "success": true
+      },
+      "test_category": "Valid arguments"
+    },
+    {
+      "id": 8,
+      "description": "Show local configuration",
+      "command": "config",
+      "args": {
+        "source": "local"
+      },
+      "expected": {
+        "success": true
+      },
+      "test_category": "Valid arguments"
+    },
+    {
+      "id": 9,
+      "description": "Show effective configuration",
+      "command": "config",
+      "args": {
+        "source": "effective"
+      },
+      "expected": {
+        "success": true
+      },
+      "test_category": "Valid arguments"
+    },
+    {
+      "id": 10,
+      "description": "Show configuration with invalid source",
+      "command": "config",
+      "args": {
+        "source": "invalid"
+      },
+      "expected": {
+        "success": false,
+        "error": "Invalid value for source"
+      },
+      "test_category": "Invalid arguments"
+    },
+    {
+      "id": 11,
+      "description": "Create local configuration file",
+      "command": "index",
+      "args": {
+        "path": "/tmp",
+        "create_local_config": true,
+        "run_after_config_create": false
+      },
+      "expected": {
+        "success": true,
+        "file_created": "./config.json"
+      },
+      "test_category": "Configuration management"
+    },
+    {
+      "id": 12,
+      "description": "Create global configuration file",
+      "command": "index",
+      "args": {
+        "path": "/tmp",
+        "create_global_config": true,
+        "run_after_config_create": false
+      },
+      "expected": {
+        "success": true,
+        "file_created": "~/.docindexer/config.json"
+      },
+      "test_category": "Configuration management"
+    },
+    {
+      "id": 13,
+      "description": "Index command with dry run",
+      "command": "index",
+      "args": {
+        "path": "/tmp",
+        "dry_run": true
+      },
+      "expected": {
+        "success": true,
+        "no_files_modified": true
+      },
+      "test_category": "Dry run"
+    },
+    {
+      "id": 14,
+      "description": "Index command with show config option",
+      "command": "index",
+      "args": {
+        "path": "/tmp",
+        "show_config": true
+      },
+      "expected": {
+        "success": true,
+        "config_displayed": true
+      },
+      "test_category": "Configuration display"
+    },
+    {
+      "id": 15,
+      "description": "Command-line overrides local config",
+      "command": "index",
+      "args": {
+        "path": "/tmp",
+        "recursive": true
+      },
+      "config_files": {
+        "local": {
+          "recursive": false
+        }
+      },
+      "expected": {
+        "success": true,
+        "config": {
+          "recursive": true
+        }
+      },
+      "test_category": "Configuration precedence"
+    },
+    {
+      "id": 16,
+      "description": "Local config overrides global config",
+      "command": "index",
+      "args": {
+        "path": "/tmp"
+      },
+      "config_files": {
+        "global": {
+          "recursive": false
+        },
+        "local": {
+          "recursive": true
+        }
+      },
+      "expected": {
+        "success": true,
+        "config": {
+          "recursive": true
+        }
+      },
+      "test_category": "Configuration precedence"
+    },
+    {
+      "id": 17,
+      "description": "CLI with mutually exclusive options",
+      "command": "structure",
+      "args": {
+        "source_folder": "/tmp",
+        "file_name": "test.txt",
+        "format": "json"
+      },
+      "expected": {
+        "success": false,
+        "error": "mutually exclusive"
+      },
+      "test_category": "Validation errors"
+    },
+    {
+      "id": 18,
+      "description": "CLI missing required option",
+      "command": "structure",
+      "args": {
+        "source_folder": "/tmp"
+      },
+      "expected": {
+        "success": false,
+        "error": "required option"
+      },
+      "test_category": "Validation errors"
+    },
+    {
+      "id": 19,
+      "description": "CLI with invalid option value type",
+      "command": "index",
+      "args": {
+        "path": "/tmp",
+        "recursive": "not-a-boolean"
+      },
+      "expected": {
+        "success": false,
+        "error": "invalid type"
+      },
+      "test_category": "Validation errors"
+    },
+    {
+      "id": 20,
+      "description": "Missing dependent option",
+      "command": "structure",
+      "args": {
+        "ommit_properties": "size,items"
+      },
+      "expected": {
+        "success": false,
+        "error": "source_folder or file_name required"
+      },
+      "test_category": "Validation errors"
+    },
+    {
+      "id": 21,
+      "description": "Apply default values from schema",
+      "command": "index",
+      "args": {
+        "path": "/tmp"
+      },
+      "expected": {
+        "success": true,
+        "config": {
+          "recursive": true,
+          "dry_run": false
+        }
+      },
+      "test_category": "Default values"
+    },
+    {
+      "id": 22,
+      "description": "Debug mode with exception",
+      "command": "index",
+      "args": {
+        "path": "/tmp-nonexistent",
+        "debug": true
+      },
+      "expected": {
+        "success": false,
+        "debug_info_shown": true
+      },
+      "test_category": "Debug mode"
+    }
+  ]
+}
