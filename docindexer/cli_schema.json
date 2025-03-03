@@ -134,22 +134,6 @@
   ],
   "commands": [
     {
-      "name": "index",
-      "description": "Index documents in the specified path",
-      "options": [
-        {
-          "name": "output",
-          "description": "Output file path for the index",
-          "type": "string",
-          "flag": "--output",
-          "alternative-flag": "-o",
-          "required": false
-        }
-      ],
-      "inheritsCommonOptions": true,
-      "requiredOptions": []
-    },
-    {
       "name": "structure",
       "description": "Create a hierarchical JSON representation of markdown structure",
       "options": [
