@@ -20,6 +20,7 @@ from .config import Configuration
 from .file_iterator import FileIterator, FileInfo
 from .list_command import setup_list_command
 from .index_command import setup_index_command
+from .schema_command import setup_schema_command
 
 # Initialize console for rich output
 console = Console()
@@ -121,47 +122,7 @@ def config(source):
     
     return 0
 
-@main.command()
-def schema():
-    """Visualize CLI schema structure."""
-    schema_data = validator.schema
-    
-    # Create a tree visualization of the schema
-    tree = Tree(f"[bold magenta]{schema_data['name']} CLI[/bold magenta]")
-    
-    # Add global options
-    if schema_data.get('globalOptions'):
-        global_branch = tree.add("[bold blue]Global Options[/bold blue]")
-        for option in schema_data['globalOptions']:
-            global_branch.add(f"[cyan]{option['flag']}[/cyan]: {option['description']}")
-    
-    # Add commands
-    if schema_data.get('commands'):
-        commands_branch = tree.add("[bold green]Commands[/bold green]")
-        for command in schema_data['commands']:
-            cmd_branch = commands_branch.add(f"[yellow]{command['name']}[/yellow]: {command['description']}")
-            
-            # Add command options
-            for option in command.get('options', []):
-                required = "[bold red]*[/bold red] " if option.get('required', False) else ""
-                cmd_branch.add(f"{required}[cyan]{option['flag']}[/cyan]: {option['description']}")
-    
-    # Add common options
-    if schema_data.get('commonOptions'):
-        common_branch = tree.add("[bold blue]Common Options[/bold blue]")
-        for option in schema_data['commonOptions']:
-            required = "[bold red]*[/bold red] " if option.get('required', False) else ""
-            common_branch.add(f"{required}[cyan]{option['flag']}[/cyan]: {option['description']}")
-    
-    # Add configuration sources
-    if schema_data.get('configurationSources'):
-        config_branch = tree.add("[bold yellow]Configuration Sources[/bold yellow]")
-        for source in schema_data['configurationSources']:
-            priority = source.get('priority', 0)
-            config_branch.add(f"[cyan]{priority}.[/cyan] {source['name']}: {source['description']}")
-    
-    console.print(tree)
-    return 0
+# Command will be set up after main group is defined
 
 # Command will be set up after main group is defined
 
@@ -178,6 +139,7 @@ def structure(command, args):
 # Set up commands that were defined in separate modules
 setup_index_command(main, validate_and_apply_config, config_manager)
 setup_list_command(main, validate_and_apply_config, config_manager)
+setup_schema_command(main, validator)
 
 if __name__ == '__main__':
     main()
