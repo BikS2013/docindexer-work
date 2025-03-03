@@ -12,9 +12,12 @@ from rich.progress import Progress
 
 from .file_iterator import FileIterator, FileInfo
 from .validator import ValidationError
+from .structure.organizer import Organizer
 
 # Initialize console for rich output
 console = Console()
+
+
 
 def execute_structure_command(config_manager, args: Dict[str, Any], validate_and_apply_config):
     """Execute the structure command.
@@ -74,7 +77,9 @@ def execute_structure_command(config_manager, args: Dict[str, Any], validate_and
             for file_info in files:
                 file_path = file_info.path
 
+                structure = Organizer.load_structure_from_markdown_file(file_path)
                 print (file_path)
+
                 
                 # =============================================
                 # TODO: Insert actual structure code here

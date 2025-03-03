@@ -319,7 +319,7 @@ class Organizer:
                 # Find the end of the blockquote
                 end_idx = self.get_end_indx(tokens, i, ['blockquote_open'], ['blockquote_close'])
 
-                quote_node = self.handle_blockquote(token, tokens, i, end_idx)
+                quote_node = self.handle_blockquote(token)
                 quote_tokens = tokens[i+1:end_idx-1]
                 
                 # Add blockquote to current parent and process its content
