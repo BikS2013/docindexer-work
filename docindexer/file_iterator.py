@@ -238,6 +238,45 @@ class FileIterator:
         self._loaded = False
         self._include_hidden = self.config.get('include_hidden', False)
     
+    def get_output_path(self, input_path: Union[str, Path], target_extension: str = None) -> Path:
+        """Get the output file path based on configuration.
+        
+        Args:
+            input_path: Input file path
+            target_extension: Target file extension (with or without dot)
+            config: Configuration object with source and output folder settings
+            
+        Returns:
+            Path object for the output file
+        """
+        # Convert input path to Path object if it's a string
+        input_path = Path(input_path)
+        
+        # Get source and output folders from config
+        source_folder = Path(self.config.get('source_folder', '.'))
+        output_folder = Path(self.config.get('output_folder', './output'))
+        
+        if target_extension is None:
+            return os.path.join(output_folder, input_path.name)
+        else :
+            # Ensure target extension starts with a dot
+            if not target_extension.startswith('.'):
+                target_extension = f'.{target_extension}'
+                
+            try:
+                
+                # Construct output path with new extension
+                output_path = os.path.join(output_folder, input_path.with_suffix(target_extension).name)
+                
+                return output_path
+                
+            except ValueError as e:
+                # Handle case where input file is not under source folder
+                logger.warning(f"Input file {input_path} is not under source folder {source_folder}")
+                # Fall back to putting file directly in output folder
+                return os.path.join(output_folder, input_path.with_suffix(target_extension).name)
+
+    
     def _create_filter(self) -> FileFilter:
         """Create a composite filter based on configuration parameters.
         

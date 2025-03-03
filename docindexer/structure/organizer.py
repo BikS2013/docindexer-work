@@ -636,7 +636,7 @@ class Organizer:
             return structure
 
     @staticmethod   
-    def save_organization_to_json(document_structure: Dict[str, Any], output_path: Path, 
+    def save_structure_to_json(document_structure: Dict[str, Any], output_path: Path, 
                                  omit_properties: Optional[List[str]] = None) -> None:
         """
         Save the document organization to a JSON file.

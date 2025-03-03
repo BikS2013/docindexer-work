@@ -78,7 +78,12 @@ def execute_structure_command(config_manager, args: Dict[str, Any], validate_and
                 file_path = file_info.path
 
                 structure = Organizer.load_structure_from_markdown_file(file_path)
-                print (file_path)
+                
+                output_path = file_iterator.get_output_path(file_path, ".json")
+                Organizer.save_structure_to_json(structure, output_path)
+
+
+                #print (file_path)
 
                 
                 # =============================================
