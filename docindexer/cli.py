@@ -21,7 +21,7 @@ from .config import Configuration
 console = Console()
 
 # Create configuration and validator instances
-config = Configuration()
+config_manager = Configuration()
 validator = SchemaValidator(Path(__file__).parent / "cli_schema.json")
 
 def validate_and_apply_config(command: str, args: Dict[str, Any]) -> Dict[str, Any]:
@@ -41,7 +41,7 @@ def validate_and_apply_config(command: str, args: Dict[str, Any]) -> Dict[str, A
     normalized_args = validator.normalize_args(args)
     
     # Load configuration from files
-    config.load_config()
+    config_manager.load_config()
     
     # Apply defaults from schema
     args_with_defaults = validator.apply_defaults(normalized_args, command)
@@ -53,9 +53,9 @@ def validate_and_apply_config(command: str, args: Dict[str, Any]) -> Dict[str, A
         raise click.UsageError(f"Validation failed:\n{error_msg}")
     
     # Update configuration with command-line arguments
-    config.set_cli_args(args_with_defaults)
+    config_manager.set_cli_args(args_with_defaults)
     
-    return config.as_dict()
+    return config_manager.as_dict()
 
 @click.group()
 @click.version_option()
@@ -80,7 +80,7 @@ def main(readme):
               help='Create a local config.json file with current settings')
 @click.option('--create-global-config', is_flag=True, 
               help='Create a global config.json file with current settings')
-@click.option('--run-after-config-create', is_flag=True, default=True,
+@click.option('--run-after-config-create/--no-run-after-config-create', is_flag=True, default=True,
               help='Run the command after creating config file(s)')
 @click.option('--show-config', is_flag=True,
               help='Show effective configuration and exit')
@@ -112,12 +112,12 @@ def index(ctx, path, recursive, output, create_local_config, create_global_confi
         config_created = False
         
         if create_local_config:
-            config.create_local_config()
+            config_manager.create_local_config()
             config_created = True
             console.print("[bold green]✓[/] Created local configuration file")
             
         if create_global_config:
-            config.create_global_config()
+            config_manager.create_global_config()
             config_created = True
             console.print("[bold green]✓[/] Created global configuration file")
             
@@ -193,13 +193,13 @@ def index(ctx, path, recursive, output, create_local_config, create_global_confi
 def config(source):
     """Display current configuration settings."""
     # Load configuration
-    config.load_config()
+    config_manager.load_config()
     
     if source in ['all', 'global']:
-        config.load_global_config()
-        if config._global_config:
+        config_manager.load_global_config()
+        if config_manager._global_config:
             console.print(Panel(
-                json.dumps(config._global_config, indent=2),
+                json.dumps(config_manager._global_config, indent=2),
                 title="Global Configuration (~/.docindexer/config.json)",
                 border_style="blue"
             ))
@@ -207,10 +207,10 @@ def config(source):
             console.print("[yellow]No global configuration found[/]")
     
     if source in ['all', 'local']:
-        config.load_local_config()
-        if config._local_config:
+        config_manager.load_local_config()
+        if config_manager._local_config:
             console.print(Panel(
-                json.dumps(config._local_config, indent=2),
+                json.dumps(config_manager._local_config, indent=2),
                 title="Local Configuration (./config.json)",
                 border_style="green"
             ))
@@ -218,7 +218,7 @@ def config(source):
             console.print("[yellow]No local configuration found[/]")
     
     if source in ['all', 'effective']:
-        effective_config = config.as_dict()
+        effective_config = config_manager.as_dict()
         if effective_config:
             console.print(Panel(
                 json.dumps(effective_config, indent=2),

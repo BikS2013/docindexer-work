@@ -169,6 +169,10 @@ class SchemaValidator:
             if arg_value is None:
                 continue
                 
+            # Skip special arguments
+            if arg_name in ['command', 'path']:
+                continue
+                
             # Check if this is a valid option for this command
             if arg_name in command_opts:
                 option = command_opts[arg_name]

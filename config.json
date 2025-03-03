@@ -1,0 +1,14 @@
+{
+  "command": "index",
+  "path": ".",
+  "recursive": false,
+  "create_local_config": true,
+  "create_global_config": false,
+  "run_after_config_create": false,
+  "show_config": false,
+  "debug": false,
+  "dry_run": false,
+  "source_folder": ".",
+  "random": false,
+  "output_folder": "./output"
+}

@@ -134,6 +134,22 @@
   ],
   "commands": [
     {
+      "name": "index",
+      "description": "Index documents in the specified path",
+      "options": [
+        {
+          "name": "output",
+          "description": "Output file path for the index",
+          "type": "string",
+          "flag": "--output",
+          "alternative-flag": "-o",
+          "required": false
+        }
+      ],
+      "inheritsCommonOptions": true,
+      "requiredOptions": []
+    },
+    {
       "name": "structure",
       "description": "Create a hierarchical JSON representation of markdown structure",
       "options": [
@@ -154,6 +170,29 @@
         ],
         "output_folder"
       ]
+    },
+    {
+      "name": "config",
+      "description": "Display configuration settings",
+      "options": [
+        {
+          "name": "source",
+          "description": "Which configuration source to display",
+          "type": "string",
+          "flag": "--source",
+          "required": false,
+          "default-value": "effective"
+        }
+      ],
+      "inheritsCommonOptions": false,
+      "requiredOptions": []
+    },
+    {
+      "name": "schema",
+      "description": "Visualize CLI schema structure",
+      "options": [],
+      "inheritsCommonOptions": false,
+      "requiredOptions": []
     }
   ],
   "configurationSources": [
