@@ -22,6 +22,7 @@ from .list_command import setup_list_command
 from .index_command import setup_index_command
 from .schema_command import setup_schema_command
 from .config_command import setup_config_command
+from .structure_command import setup_structure_command
 
 # Initialize console for rich output
 console = Console()
@@ -98,20 +99,14 @@ def main(ctx, readme):
 # Command will be set up after main group is defined
 
 
-@main.command()
-@click.argument('command', required=True)
-@click.argument('args', nargs=-1)
-def structure(command, args):
-    """Create a hierarchical JSON representation of markdown structure."""
-    console.print("[bold]The 'structure' command is not yet implemented[/]")
-    console.print(f"Called with command: {command}, args: {args}")
-    return 1
+# Command will be set up after main group is defined
 
 # Set up commands that were defined in separate modules
 setup_index_command(main, validate_and_apply_config, config_manager)
 setup_list_command(main, validate_and_apply_config, config_manager)
 setup_schema_command(main, validator)
 setup_config_command(main, config_manager)
+setup_structure_command(main, validate_and_apply_config, config_manager)
 
 if __name__ == '__main__':
     main()
