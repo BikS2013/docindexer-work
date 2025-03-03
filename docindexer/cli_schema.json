@@ -183,10 +183,10 @@
       "description": "Create a hierarchical JSON representation of markdown structure",
       "options": [
         {
-          "name": "ommit_properties",
+          "name": "omit_properties",
           "description": "Comma-separated list of properties to omit from the JSON output (e.g., 'items,size')",
           "type": "string",
-          "flag": "--ommit-properties",
+          "flag": "--omit-properties",
           "required": false
         }
       ],

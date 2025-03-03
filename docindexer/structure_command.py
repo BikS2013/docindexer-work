@@ -65,9 +65,14 @@ def execute_structure_command(config_manager, args: Dict[str, Any], validate_and
         
         # Get omit properties (if any)
         omit_properties = []
-        if args.get('ommit_properties'):
-            omit_properties = args.get('ommit_properties').split(',')
+        if args.get('omit_properties'):
+            # Split and trim whitespace from each property
+            omit_properties = [prop.strip() for prop in args.get('omit_properties').split(',')]
             console.print(f"[blue]Will omit the following properties: {', '.join(omit_properties)}[/]")
+        
+        # Create a filter instance if needed
+        from .structure.filter import Filter
+        filter_instance = Filter() if omit_properties else None
         
         # Process files with progress indicator
         with Progress() as progress:
@@ -80,7 +85,11 @@ def execute_structure_command(config_manager, args: Dict[str, Any], validate_and
                 structure = Organizer.load_structure_from_markdown_file(file_path)
                 
                 output_path = file_iterator.get_output_path(file_path, ".json")
-                Organizer.save_structure_to_json(structure, output_path)
+                
+                if filter_instance and omit_properties:
+                    structure = filter_instance.filter_document(structure, omit_properties)
+                
+                Organizer.save_structure_to_json(structure, output_path, omit_properties)
 
 
                 #print (file_path)
@@ -133,7 +142,7 @@ def setup_structure_command(main_group, validate_and_apply_config, config_manage
         config_manager: Configuration manager instance
     """
     @main_group.command()
-    @click.option('--ommit-properties', help='Comma-separated list of properties to omit from the JSON output (e.g., "items,size")')
+    @click.option('--omit-properties', help='Comma-separated list of properties to omit from the JSON output (e.g., "items,size")')
     # Common options for file discovery
     @click.option('--source-folder', '-s', help='Path to the folder containing files to be processed')
     @click.option('--catalogue', '-c', help='Path to a catalogue JSON file')
@@ -155,13 +164,13 @@ def setup_structure_command(main_group, validate_and_apply_config, config_manage
     @click.option('--debug', is_flag=True, help='Enable debug mode with additional logging')
     @click.option('--include-hidden', is_flag=True, help='Include hidden files and directories (starting with .)')
     @click.pass_context
-    def structure(ctx, ommit_properties, source_folder, catalogue, file_name, 
-                  pattern, regex, sort_by, desc, max_depth, recursive, limit, random, 
+    def structure(ctx, omit_properties, source_folder, catalogue, file_name,
+                  pattern, regex, sort_by, desc, max_depth, recursive, limit, random,
                   output_folder, debug, include_hidden):
         """Create a hierarchical JSON representation of markdown structure."""
         command_args = {
             'command': 'structure',
-            'ommit_properties': ommit_properties,
+            'omit_properties': omit_properties,
             'source_folder': source_folder,
             'catalogue': catalogue,
             'file_name': file_name,
