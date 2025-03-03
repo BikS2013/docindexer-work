@@ -1,0 +1,178 @@
+{
+  "name": "docindexer",
+  "description": "Process files to prepare them for vectorization and indexing",
+  "version": "1.0.0",
+  "globalOptions": [
+    {
+      "name": "readme",
+      "description": "Display README and exit",
+      "type": "boolean",
+      "flag": "--readme",
+      "required": false
+    }
+  ],
+  "commonOptions": [
+    {
+      "name": "source folder",
+      "description": "Path to the folder containing files to be processed",
+      "type": "string",
+      "flag": "--source-folder",
+      "alternative-flag": "-s",
+      "required": false,
+      "default-value": ".",
+      "mutually-exclusive-with": [
+        "catalogue",
+        "file-name"
+      ]
+    },
+    {
+      "name": "catalogue",
+      "description": "Path to a catalogue JSON file",
+      "type": "string",
+      "flag": "--catalogue",
+      "alternative-flag": "-c",
+      "required": false,
+      "mutually-exclusive-with": [
+        "source-folder",
+        "file-name"
+      ]
+    },
+    {
+      "name": "file name",
+      "description": "the name of the file to be processed",
+      "type": "string",
+      "flag": "--file-name",
+      "alternative-flag": "-n",
+      "required": false,
+      "mutually-exclusive-with": [
+        "source-folder",
+        "catalogue"
+      ]
+    },
+    {
+      "name": "recursive",
+      "description": "Process files in subfolders recursively",
+      "type": "boolean",
+      "flag": "--recursive",
+      "alternative-flag": "-R",
+      "required": false,
+      "default-value": true,
+      "requires": [
+        "source-folder"
+      ]
+    },
+    {
+      "name": "limit",
+      "description": "Limit the number of files to be processed",
+      "type": "integer",
+      "flag": "--limit",
+      "alternative-flag": "-l",
+      "required": false
+    },
+    {
+      "name": "random",
+      "description": "Process files in random order",
+      "type": "boolean",
+      "flag": "--random",
+      "alternative-flag": "-r",
+      "required": false,
+      "default-value": false
+    },
+    {
+      "name": "output_folder",
+      "description": "Path to the folder where processed files should be saved",
+      "type": "string",
+      "flag": "--output-folder",
+      "alternative-flag": "-o",
+      "required": false,
+      "default-value": "./output"
+    },
+    {
+      "name": "create_local_config",
+      "description": "Create a local config.json file with current settings",
+      "type": "boolean",
+      "flag": "--create-local-config",
+      "required": false
+    },
+    {
+      "name": "create_global_config",
+      "description": "Create a global config.json file with current settings",
+      "type": "boolean",
+      "flag": "--create-global-config",
+      "required": false
+    },
+    {
+      "name": "run_after_config_create",
+      "description": "Run the command after creating config file(s)",
+      "type": "boolean",
+      "flag": "--run-after-config-create",
+      "required": false,
+      "default-value": true
+    },
+    {
+      "name": "show_config",
+      "description": "Show effective configuration and exit",
+      "type": "boolean",
+      "flag": "--show-config",
+      "required": false
+    },
+    {
+      "name": "debug",
+      "description": "Enable debug mode with additional logging",
+      "type": "boolean",
+      "flag": "--debug",
+      "required": false
+    },
+    {
+      "name": "dry_run",
+      "description": "Perform a dry run without saving any files",
+      "type": "boolean",
+      "flag": "--dry-run",
+      "required": false,
+      "default-value": false
+    }
+  ],
+  "commands": [
+    {
+      "name": "structure",
+      "description": "Create a hierarchical JSON representation of markdown structure",
+      "options": [
+        {
+          "name": "ommit_properties",
+          "description": "Comma-separated list of properties to omit from the JSON output (e.g., 'items,size')",
+          "type": "string",
+          "flag": "--ommit-properties",
+          "required": false
+        }
+      ],
+      "inheritsCommonOptions": true,
+      "requiredOptions": [
+        [
+          "catalogue",
+          "source_folder",
+          "file_name"
+        ],
+        "output_folder"
+      ]
+    }
+  ],
+  "configurationSources": [
+    {
+      "name": "Command-line arguments",
+      "priority": 1,
+      "description": "Options specified directly on the command line"
+    },
+    {
+      "name": "Local config file",
+      "priority": 2,
+      "path": "./config.json",
+      "description": "JSON configuration file in the current directory"
+    },
+    {
+      "name": "Global config file",
+      "priority": 3,
+      "path": "~/.vectorizer/config.json",
+      "description": "JSON configuration file in the user's home directory"
+    }
+  ]
+}
