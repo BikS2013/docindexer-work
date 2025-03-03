@@ -105,7 +105,7 @@ def main(ctx, readme):
 setup_index_command(main, validate_and_apply_config, config_manager)
 setup_list_command(main, validate_and_apply_config, config_manager)
 setup_schema_command(main, validator)
-setup_config_command(main, config_manager)
+setup_config_command(main, config_manager, validate_and_apply_config)
 setup_structure_command(main, validate_and_apply_config, config_manager)
 
 if __name__ == '__main__':

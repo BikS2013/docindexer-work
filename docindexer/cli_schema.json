@@ -232,9 +232,16 @@
           "type": "boolean",
           "flag": "--show",
           "required": false
+        },
+        {
+          "name": "omit_properties",
+          "description": "Properties to omit from processing (for commands that support it)",
+          "type": "string",
+          "flag": "--omit-properties",
+          "required": false
         }
       ],
-      "inheritsCommonOptions": false,
+      "inheritsCommonOptions": true,
       "requiredOptions": []
     },
     {
