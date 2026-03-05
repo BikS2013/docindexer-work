@@ -2,6 +2,7 @@ import json
 import re
 from typing import Dict, List, Tuple, Union, Any
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+import os
 
 
 class DocumentChunker:
@@ -308,17 +309,42 @@ if __name__ == "__main__":
         size_tolerance=0.1    # Allow up to 10% over max size
     )
     
-    # Process the document
-    chunking_plan, text_chunks = chunker.process_document('sample_doc_structure.json')
+    output_folder = os.path.join(os.getcwd(), 'output')
+    for filename in os.listdir(output_folder):
+        if filename.endswith('.json'):
+            json_file_path = os.path.join(output_folder, filename)
+            chunking_plan, text_chunks = chunker.process_document(json_file_path)
+            
+            # Create filenames for the chunking plan and text chunks
+            base_filename = os.path.splitext(filename)[0]
+            plan_filename = f"{base_filename}_plan.json"
+            chunks_filename = f"{base_filename}_chunks.json"
+            
+            # Save the chunking plan
+            with open(os.path.join(output_folder, plan_filename), 'w') as f:
+                json.dump(chunking_plan, f, indent=2)
+            
+            # Save the text chunks
+            with open(os.path.join(output_folder, chunks_filename), 'w') as f:
+                json.dump(text_chunks, f, indent=2)
+            
+            # Print some stats
+            print(f"Processed {filename}:")
+            print(f"  Generated {len(text_chunks)} chunks")
+            print(f"  Chunk sizes: {[chunk['size'] for chunk in text_chunks]}")
+
+
+    # # Process the document
+    # chunking_plan, text_chunks = chunker.process_document('sample_doc_structure.json')
     
-    # Save the chunking plan
-    with open('chunking_plan.json', 'w') as f:
-        json.dump(chunking_plan, f, indent=2)
+    # # Save the chunking plan
+    # with open('chunking_plan.json', 'w') as f:
+    #     json.dump(chunking_plan, f, indent=2)
     
-    # Save the text chunks
-    with open('text_chunks.json', 'w') as f:
-        json.dump(text_chunks, f, indent=2)
+    # # Save the text chunks
+    # with open('text_chunks.json', 'w') as f:
+    #     json.dump(text_chunks, f, indent=2)
     
-    # Print some stats
-    print(f"Generated {len(text_chunks)} chunks from document")
-    print(f"Chunk sizes: {[chunk['size'] for chunk in text_chunks]}")
+    # # Print some stats
+    # print(f"Generated {len(text_chunks)} chunks from document")
+    # print(f"Chunk sizes: {[chunk['size'] for chunk in text_chunks]}")
